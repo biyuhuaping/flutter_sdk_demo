@@ -3,6 +3,7 @@ import 'package:flutter_sdk_demo/FullScreenModal.dart';
 import 'share_helper.dart';
 import 'package:draggable_widget/draggable_widget.dart';
 import 'share_content_page.dart';
+import 'share_page.dart';
 
 // This is the main screen of the application
 class HomeScreen extends StatefulWidget {
@@ -16,7 +17,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final dragController = DragController();
 
   void _showModal(BuildContext context) {
-    Navigator.of(context).push(FullScreenModal());
+    // Navigator.of(context).push(FullScreenModal());
+    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => SharePageView()));
+    Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return SharePageView();
+        })
+    );
   }
 
   @override

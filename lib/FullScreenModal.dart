@@ -29,9 +29,8 @@ class FullScreenModal extends ModalRoute {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Container(
+    return Scaffold(
+      body: SizedBox(
         height: MediaQuery.of(context).size.height -128,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -42,23 +41,60 @@ class FullScreenModal extends ModalRoute {
               color: Colors.green,
               // height: 1000,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                buildMaterialButton("关闭", Colors.black.withOpacity(0.5), (){
-                  Navigator.pop(context);
-                }),
-                buildMaterialButton("分享", Colors.orange, (){
-                  Navigator.pop(context);
-                  //share_plus 分享
-                  ShareHelper.onSharePlusShare(context);
-                })
-              ],
-            ),
           ],
         ),
       ),
+      // appBar: AppBar(
+      //   // Here we take the value from the MyHomePage object that was created by
+      //   // the App.build method, and use it to set our appbar title.
+      //   title: Text(widget.title),
+      // ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          buildMaterialButton("关闭", Colors.black.withOpacity(0.5), (){
+            Navigator.pop(context);
+          }),
+          buildMaterialButton("分享", Colors.orange, (){
+            Navigator.pop(context);
+            //share_plus 分享
+            ShareHelper.onSharePlusShare(context);
+          })
+        ],
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+
+    // return Scaffold(
+    //   type: MaterialType.transparency,
+    //   child: Container(
+    //     height: MediaQuery.of(context).size.height -128,
+    //     child: Column(
+    //       mainAxisSize: MainAxisSize.min,
+    //       children: [
+    //         Container(
+    //           padding: EdgeInsets.only(left: 10, right: 10),
+    //           child: ShareContentPage(),
+    //           color: Colors.green,
+    //           // height: 1000,
+    //         ),
+    //         Row(
+    //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //           children: [
+    //             buildMaterialButton("关闭", Colors.black.withOpacity(0.5), (){
+    //               Navigator.pop(context);
+    //             }),
+    //             buildMaterialButton("分享", Colors.orange, (){
+    //               Navigator.pop(context);
+    //               //share_plus 分享
+    //               ShareHelper.onSharePlusShare(context);
+    //             })
+    //           ],
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    //   floating
+    // );
   }
 
   @override
