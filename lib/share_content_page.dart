@@ -20,42 +20,74 @@ class _ShareContentPageState extends State<ShareContentPage> {
   ];
 
   bool isButton1Selected = true;
-  int selectedType = 1;//默认选中BD=1，KA=2
+  int selectedType = 1; //默认选中BD=1，KA=2
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        buildHeaderButtons(context),
-        Stack(
-          children: <Widget>[
-            Image.asset(
-              'assets/share_header_BD.png',
-              fit: BoxFit.cover,
-            ),
-            Positioned.fill(
-              top: 130,
-              child: Container(
-                color: Colors.orange.withOpacity(0.5),
-                width: 200,
-                child: Container(
-                  color: Colors.orange,
-                  // physics: BouncingScrollPhysics(),
-                  child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      // buildHeaderView(),
-                      buildContentView(context),
-                      buildFooterView(),
-                      // SizedBox(height: 1000), // 增加一些高度以便滚动显示
-                    ],
-                  ),
+    return Container(
+      margin: EdgeInsets.only(top: 80),//弹框顶部位置
+      height: MediaQuery.of(context).size.height - 200,//弹框整体高度
+      decoration: BoxDecoration(
+        // color: Color(0xFFFB8702),
+        borderRadius: BorderRadius.circular(9),
+      ),
+      child: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          // width: MediaQuery.of(context).size.width-34,
+          child: Stack(
+            children: <Widget>[
+              buildHeaderButtons(context),
+              Positioned(
+                top: 50,
+                left: 0,
+                right: 0,
+                child: Image.asset(
+                  selectedType == 1
+                      ? 'assets/share_header_BD.png'
+                      : 'assets/share_header_KA.png',
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-          ],
+              Positioned(
+                top: 180,
+                child: Container(
+                  height: 800,
+                  width: MediaQuery.of(context).size.width,
+                  color: Color(0xFFFB8702),
+                ),
+              ),
+              Positioned.fill(
+                top: 150,
+                child: buildContainer(),
+              )
+            ],
+          ),
         ),
-      ],
+      ),
+    );
+    // return ListView(
+    //   children:
+    // );
+  }
+
+  Widget buildContainer() {
+    return Container(
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.only(top: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.4),
+        borderRadius: BorderRadius.circular(9),
+      ),
+      child: Column(
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // buildHeaderView(),
+          buildContentView(context),
+          buildFooterView(),
+          // SizedBox(height: 1000), // 增加一些高度以便滚动显示
+        ],
+      ),
     );
   }
 
@@ -71,10 +103,10 @@ class _ShareContentPageState extends State<ShareContentPage> {
       child: Row(
         children: [
           Expanded(
-            child: customButton("BD榜", selectedType==1, 1),
+            child: customButton("BD榜", selectedType == 1, 1),
           ),
           Expanded(
-            child: customButton("KA榜", selectedType==2, 2),
+            child: customButton("KA榜", selectedType == 2, 2),
           ),
         ],
       ),
@@ -82,16 +114,17 @@ class _ShareContentPageState extends State<ShareContentPage> {
   }
 
   //按钮
-  Widget customButton(String title, bool selected, int type){
+  Widget customButton(String title, bool selected, int type) {
     return Container(
       decoration: BoxDecoration(
         color: Color(0xFFFFEDD1),
         borderRadius: BorderRadius.circular(8),
         image: selected
             ? DecorationImage(
-          image: AssetImage('assets/share_bdka.png'),
-          fit: BoxFit.cover,
-        ) : null,
+                image: AssetImage('assets/share_bdka.png'),
+                fit: BoxFit.cover,
+              )
+            : null,
       ),
       child: TextButton(
         onPressed: () {
@@ -102,7 +135,8 @@ class _ShareContentPageState extends State<ShareContentPage> {
         },
         child: Text(
           title,
-          style: TextStyle(color: selected ? Colors.white : Color(0xFFFC6105),fontSize: 18),
+          style: TextStyle(
+              color: selected ? Colors.white : Color(0xFFFC6105), fontSize: 18),
         ),
       ),
     );
@@ -128,30 +162,26 @@ class _ShareContentPageState extends State<ShareContentPage> {
       'assets/share_dept3.png',
     ];
 
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: imageUrls.length,
-      itemBuilder: (ctx, index) {
-        ImageProvider image = AssetImage(imageUrls[index]);
+    return Column(
+      children: imageUrls.map((imageUrl) {
+        ImageProvider image = AssetImage(imageUrl);
         List<String> texts = ['Text 1', 'Text 2', 'Text 3'];
         Widget widget = buildImageWithText(image, texts);
         return buildContentGroup(context: context, child: widget);
-      },
+      }).toList(),
     );
   }
 
   //排名数据组
   Widget buildContentGroup({required BuildContext context, Widget? child}) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10), //外边距
+      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10), //外边距
       padding: EdgeInsets.all(5), //内边距
       decoration: BoxDecoration(
           color: Colors.white,
           // border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(4)),
-      width: MediaQuery.of(context).size.width - 10,
+      // width: MediaQuery.of(context).size.width - 10,
       child: child,
     );
   }
@@ -164,6 +194,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
       'Subtitle 3',
     ];
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: 110, // 图片宽度
@@ -192,9 +223,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
         Text(
           title,
           style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
+              fontSize: 28, fontWeight: FontWeight.bold, color: Colors.red),
         ),
         SizedBox(height: 10),
         ListView.builder(

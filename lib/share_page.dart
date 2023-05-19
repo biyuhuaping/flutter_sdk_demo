@@ -14,10 +14,9 @@ class SharePageViewState extends State<SharePageView> {
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.5),
       body: Container(
-        padding: EdgeInsets.only(left: 10, right: 10),
+        padding: EdgeInsets.only(left: 17, right: 17),
         child: ShareContentPage(),
         color: Colors.transparent,
-        // height: 1000,
       ),
       floatingActionButton: Stack(
         alignment: Alignment.bottomCenter,
