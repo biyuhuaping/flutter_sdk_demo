@@ -5,8 +5,14 @@ import 'package:draggable_widget/draggable_widget.dart';
 import 'share_content_page.dart';
 
 // This is the main screen of the application
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final dragController = DragController();
 
   void _showModal(BuildContext context) {

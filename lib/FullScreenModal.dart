@@ -32,29 +32,29 @@ class FullScreenModal extends ModalRoute {
     return Material(
       type: MaterialType.transparency,
       child: Container(
+        height: MediaQuery.of(context).size.height -128,
         child: Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'This is a title',
-              style: TextStyle(color: Colors.white, fontSize: 40.0),
-            ),
             Container(
               padding: EdgeInsets.only(left: 10, right: 10),
               child: ShareContentPage(),
-              color: Colors.red,
+              color: Colors.green,
+              // height: 1000,
             ),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.close),
-              label: const Text('关闭'),
-              onPressed: () {
-                //share_plus 分享
-                ShareHelper.onSharePlusShare(context);
-                //微信SDK分享
-                // ShareHelper.onShareWx(context);
-                Navigator.pop(context);
-              },
-            )
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                buildMaterialButton("关闭", Colors.black.withOpacity(0.5), (){
+                  Navigator.pop(context);
+                }),
+                buildMaterialButton("分享", Colors.orange, (){
+                  Navigator.pop(context);
+                  //share_plus 分享
+                  ShareHelper.onSharePlusShare(context);
+                })
+              ],
+            ),
           ],
         ),
       ),
@@ -81,5 +81,36 @@ class FullScreenModal extends ModalRoute {
       ),
     );
   }
+
+  //关闭、分享 按钮
+  MaterialButton buildMaterialButton(String titleStr, Color col, VoidCallback onPressed) {
+    return MaterialButton(
+      // 背景颜色
+      color: col,
+      // 边框样式
+      shape: const RoundedRectangleBorder(
+        // 边框颜色
+        side: BorderSide(
+          color: Colors.white,
+          width: 1,
+        ),
+        // 边框圆角
+        borderRadius: BorderRadius.all(
+          Radius.circular(25),
+        ),
+      ),
+      // 按钮高度
+      height: 50,
+      // 按钮最小宽度
+      minWidth: 163,
+      // 点击事件
+      onPressed: onPressed,
+      child: Text(
+        titleStr,
+        style:const TextStyle(fontSize: 18, color: Colors.white),
+      ),
+    );
+  }
+
 }
 
