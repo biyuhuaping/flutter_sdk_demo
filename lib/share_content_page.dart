@@ -8,6 +8,8 @@ class Data {
 }
 
 class ShareContentPage extends StatefulWidget {
+  const ShareContentPage({Key? key}) : super(key: key);
+
   @override
   State<ShareContentPage> createState() => _ShareContentPageState();
 }
@@ -24,16 +26,18 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
   @override
   Widget build(BuildContext context) {
+    double height = 1186;//内容高度
+
     return Container(
-      margin: EdgeInsets.only(top: 80),//弹框顶部位置
+      margin: const EdgeInsets.only(top: 80),//弹框顶部位置
       height: MediaQuery.of(context).size.height - 200,//弹框整体高度
       decoration: BoxDecoration(
         // color: Color(0xFFFB8702),
         borderRadius: BorderRadius.circular(9),
       ),
       child: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
+        child: SizedBox(
+          height: height,
           // width: MediaQuery.of(context).size.width-34,
           child: Stack(
             children: <Widget>[
@@ -52,9 +56,17 @@ class _ShareContentPageState extends State<ShareContentPage> {
               Positioned(
                 top: 180,
                 child: Container(
-                  height: 800,
+                  height: height,
                   width: MediaQuery.of(context).size.width,
-                  color: Color(0xFFFB8702),
+                  // decoration: const BoxDecoration(
+                  //   color: Color(0xFFFB8702),
+                  //   borderRadius: BorderRadius.only(
+                  //     // topLeft: Radius.circular(0),
+                  //     // topRight: Radius.circular(0),
+                  //     bottomLeft: Radius.circular(10),
+                  //     bottomRight: Radius.circular(10),
+                  //   ),
+                  // ),
                 ),
               ),
               Positioned.fill(
@@ -66,26 +78,17 @@ class _ShareContentPageState extends State<ShareContentPage> {
         ),
       ),
     );
-    // return ListView(
-    //   children:
-    // );
   }
 
   Widget buildContainer() {
-    return Container(
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(9),
-      ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          // buildHeaderView(),
           buildContentView(context),
+          buildRichText(),
           buildFooterView(),
-          // SizedBox(height: 1000), // 增加一些高度以便滚动显示
         ],
       ),
     );
@@ -94,9 +97,9 @@ class _ShareContentPageState extends State<ShareContentPage> {
   //头部按钮部件
   Widget buildHeaderButtons(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(2),
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: Color(0xFFFFEDD1),
+        color: const Color(0xFFFFEDD1),
         borderRadius: BorderRadius.circular(12),
       ),
       height: 45,
@@ -113,14 +116,14 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
-  //按钮
+  //按钮样式
   Widget customButton(String title, bool selected, int type) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFFFEDD1),
+        color: const Color(0xFFFFEDD1),
         borderRadius: BorderRadius.circular(8),
         image: selected
-            ? DecorationImage(
+            ? const DecorationImage(
                 image: AssetImage('assets/share_bdka.png'),
                 fit: BoxFit.cover,
               )
@@ -136,7 +139,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
         child: Text(
           title,
           style: TextStyle(
-              color: selected ? Colors.white : Color(0xFFFC6105), fontSize: 18),
+              color: selected ? Colors.white : const Color(0xFFFC6105), fontSize: 18),
         ),
       ),
     );
@@ -162,21 +165,29 @@ class _ShareContentPageState extends State<ShareContentPage> {
       'assets/share_dept3.png',
     ];
 
-    return Column(
-      children: imageUrls.map((imageUrl) {
-        ImageProvider image = AssetImage(imageUrl);
-        List<String> texts = ['Text 1', 'Text 2', 'Text 3'];
-        Widget widget = buildImageWithText(image, texts);
-        return buildContentGroup(context: context, child: widget);
-      }).toList(),
+    return Container(
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(top: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.4),
+        borderRadius: BorderRadius.circular(9),
+      ),
+      child: Column(
+        children: imageUrls.map((imageUrl) {
+          ImageProvider image = AssetImage(imageUrl);
+          List<String> texts = ['Text 1', 'Text 2', 'Text 3'];
+          Widget widget = buildImageWithText(image, texts);
+          return buildContentGroup(context: context, child: widget);
+        }).toList(),
+      ),
     );
   }
 
   //排名数据组
   Widget buildContentGroup({required BuildContext context, Widget? child}) {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10), //外边距
-      padding: EdgeInsets.all(5), //内边距
+      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10), //外边距
+      padding: const EdgeInsets.all(5), //内边距
       decoration: BoxDecoration(
           color: Colors.white,
           // border: Border.all(color: Colors.grey),
@@ -206,7 +217,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
             ),
           ),
         ),
-        SizedBox(width: 16), // 图片和文字之间的间距
+        const SizedBox(width: 16), // 图片和文字之间的间距
         Expanded(
           child: buildItemWidget("55万+", texts, subTitles),
         ),
@@ -222,13 +233,13 @@ class _ShareContentPageState extends State<ShareContentPage> {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 28, fontWeight: FontWeight.bold, color: Colors.red),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         ListView.builder(
           padding: EdgeInsets.zero,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: mainTitles.length,
           itemBuilder: (context, index) {
@@ -242,8 +253,155 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
-  //尾部样式
+  //底部富文本
+  Widget buildRichText() {
+    return Container(
+      margin: const EdgeInsets.only(left: 10,right: 10),
+      child: Stack(
+        children: <Widget>[
+          const Positioned(
+            top: 0,
+            left: 0,
+            child: Text(
+              '“',
+              style: TextStyle(fontSize: 66, color: Colors.white),
+            ),
+          ),
+          const Positioned(
+            bottom: -35,
+            right: 0,
+            child: Text(
+              '”',
+              style: TextStyle(fontSize: 66, color: Colors.white),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 20, left: 35, bottom: 20, right: 35),
+            child: const Text(
+              '每一步都是进步，每一天都是起点，坚持不懈就能创造辉煌，相信相信的力量！',
+              style: TextStyle(fontSize: 14, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //尾部布局
   Widget buildFooterView() {
-    return const Text("footerView");
+    return Container(
+      child: Stack(
+        children: <Widget>[
+          Image.asset('assets/share_bottom_horn.png'),
+          Positioned.fill(
+            top: 6,
+            left: 0,
+            right: 0,
+            child: Align(
+              alignment: Alignment.center,
+              child: buildBottomContentView(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //尾部内容
+  Widget buildBottomContentView(){
+    return Container(
+      // color: Colors.blue,
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Align(
+              alignment: Alignment.center,
+              child: buildBottomLeftColumn(),
+            ),
+          ),
+          const SizedBox(width: 2),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: buildBottomRightColumn(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //尾部左边内容
+  Widget buildBottomLeftColumn() {
+    return Container(
+      // color: Colors.green,
+      child: Row(
+        children: <Widget>[
+          Container(
+            child: Image.asset(
+              'assets/share_logo.png',
+              width: 43,
+              height: 43,
+            ),
+          ),
+          const SizedBox(width: 7.5),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const <Widget>[
+                Text(
+                  '天玑（胡高忠）',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  '华北一区/销售一组',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF676773),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //尾部右边内容
+  Widget buildBottomRightColumn(){
+    return Container(
+      // color: Colors.blue,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const <Widget>[
+          Text(
+            '12月28日 星期六',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF00B377)
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            '癸卯兔年 甲子月 壬戌日',
+            style: TextStyle(
+              fontSize: 12,
+              color: Color(0xFF85858F),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
+
