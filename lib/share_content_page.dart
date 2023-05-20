@@ -23,44 +23,49 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
   bool isButton1Selected = true;
   int selectedType = 1; //默认选中BD=1，KA=2
+  // double containerHeight = MediaQuery.of(context).size.height - 200; //弹框整体默认高度
+  // double screenHeight = WidgetsBinding.instance!.window.physicalSize.height / WidgetsBinding.instance!.window.devicePixelRatio;
 
   @override
   Widget build(BuildContext context) {
-    double height = 1186;//内容高度
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        double containerHeight = constraints.maxHeight;
+        double screenHeight = MediaQuery.of(context).size.height - 200;
 
-    return Container(
-      margin: const EdgeInsets.only(top: 80),//弹框顶部位置
-      height: MediaQuery.of(context).size.height - 200,//弹框整体高度
-      decoration: BoxDecoration(
-        // color: Color(0xFFFB8702),
-        borderRadius: BorderRadius.circular(9),
-      ),
-      child: SingleChildScrollView(
-        child: SizedBox(
-          height: height,
-          // width: MediaQuery.of(context).size.width-34,
-          child: Stack(
-            children: <Widget>[
-              buildHeaderButtons(context),
-              Positioned(
-                top: 50,
-                left: 0,
-                right: 0,
-                child: Image.asset(
-                  selectedType == 1
-                      ? 'assets/share_header_BD.png'
-                      : 'assets/share_header_KA.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Positioned.fill(
-                top: 150,
-                child: buildContainer(),
-              )
-            ],
+        return Container(//弹框视图容器
+          margin: const EdgeInsets.only(top: 80), // 弹框顶部位置
+          height: containerHeight > screenHeight ? screenHeight : containerHeight, // 弹框整体高度
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(9),
           ),
-        ),
-      ),
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: containerHeight+300,//TODO：这个里的高度必须写死，怎么才能写活
+              child: Stack(
+                children: <Widget>[
+                  buildHeaderButtons(context),
+                  Positioned(
+                    top: 50,
+                    left: 0,
+                    right: 0,
+                    child: Image.asset(
+                      selectedType == 1
+                          ? 'assets/share_header_BD.png'
+                          : 'assets/share_header_KA.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned.fill(
+                    top: 150,
+                    child: buildContainer(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -73,28 +78,27 @@ class _ShareContentPageState extends State<ShareContentPage> {
             decoration: const BoxDecoration(
               color: Color(0xFFFB8702),
               borderRadius: BorderRadius.only(
-                // topLeft: Radius.circular(0),
-                // topRight: Radius.circular(0),
                 bottomLeft: Radius.circular(13),
                 bottomRight: Radius.circular(13),
               ),
             ),
           ),
         ),
-        SingleChildScrollView(
-          padding: EdgeInsets.zero,
+        ListView.builder(
+          shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: NeverScrollableScrollPhysics(),
-            children: <Widget>[
-              buildContentView(context),
-              buildRichText(),
-              buildFooterView(),
-            ],
-          ),
-        )
+          padding: EdgeInsets.zero,
+          itemCount: 1,
+          itemBuilder: (context, index) {
+            return Column(
+              children: <Widget>[
+                buildContentView(context),
+                buildRichText(),
+                buildFooterView(),
+              ],
+            );
+          },
+        ),
       ],
     );
   }
