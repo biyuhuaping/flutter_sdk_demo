@@ -53,22 +53,6 @@ class _ShareContentPageState extends State<ShareContentPage> {
                   fit: BoxFit.cover,
                 ),
               ),
-              Positioned(
-                top: 180,
-                child: Container(
-                  height: height,
-                  width: MediaQuery.of(context).size.width,
-                  // decoration: const BoxDecoration(
-                  //   color: Color(0xFFFB8702),
-                  //   borderRadius: BorderRadius.only(
-                  //     // topLeft: Radius.circular(0),
-                  //     // topRight: Radius.circular(0),
-                  //     bottomLeft: Radius.circular(10),
-                  //     bottomRight: Radius.circular(10),
-                  //   ),
-                  // ),
-                ),
-              ),
               Positioned.fill(
                 top: 150,
                 child: buildContainer(),
@@ -81,16 +65,37 @@ class _ShareContentPageState extends State<ShareContentPage> {
   }
 
   Widget buildContainer() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Column(
-        children: <Widget>[
-          buildContentView(context),
-          buildRichText(),
-          buildFooterView(),
-        ],
-      ),
+    return Stack(
+      children: [
+        Positioned.fill(
+          top: 50,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFFFB8702),
+              borderRadius: BorderRadius.only(
+                // topLeft: Radius.circular(0),
+                // topRight: Radius.circular(0),
+                bottomLeft: Radius.circular(13),
+                bottomRight: Radius.circular(13),
+              ),
+            ),
+          ),
+        ),
+        SingleChildScrollView(
+          padding: EdgeInsets.zero,
+          physics: NeverScrollableScrollPhysics(),
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            children: <Widget>[
+              buildContentView(context),
+              buildRichText(),
+              buildFooterView(),
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -172,30 +177,33 @@ class _ShareContentPageState extends State<ShareContentPage> {
         color: Colors.white.withOpacity(0.4),
         borderRadius: BorderRadius.circular(9),
       ),
-      child: Column(
-        children: imageUrls.map((imageUrl) {
-          ImageProvider image = AssetImage(imageUrl);
+      child: ListView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: imageUrls.length,
+        itemBuilder: (BuildContext context, int index) {
+          ImageProvider image = AssetImage(imageUrls[index]);
           List<String> texts = ['Text 1', 'Text 2', 'Text 3'];
           Widget widget = buildImageWithText(image, texts);
           return buildContentGroup(context: context, child: widget);
-        }).toList(),
+        },
       ),
     );
   }
 
-  //排名数据组
   Widget buildContentGroup({required BuildContext context, Widget? child}) {
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10), //外边距
       padding: const EdgeInsets.all(5), //内边距
       decoration: BoxDecoration(
-          color: Colors.white,
-          // border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(4)),
-      // width: MediaQuery.of(context).size.width - 10,
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+      ),
       child: child,
     );
   }
+
 
   //item 单组数据 图片和文字
   Widget buildImageWithText(ImageProvider image, List<String> texts) {
@@ -228,35 +236,36 @@ class _ShareContentPageState extends State<ShareContentPage> {
   // 每条内容
   Widget buildItemWidget(
       String title, List<String> mainTitles, List<String> subTitles) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-              fontSize: 28, fontWeight: FontWeight.bold, color: Colors.red),
-        ),
-        const SizedBox(height: 10),
-        ListView.builder(
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: mainTitles.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(mainTitles[index]),
-              subtitle: Text(subTitles[index]),
-            );
-          },
-        ),
-      ],
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: mainTitles.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Text(
+            title,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
+          );
+        } else {
+          final itemIndex = index - 1;
+          return ListTile(
+            title: Text(mainTitles[itemIndex]),
+            subtitle: Text(subTitles[itemIndex]),
+          );
+        }
+      },
     );
   }
 
   //底部富文本
   Widget buildRichText() {
     return Container(
-      margin: const EdgeInsets.only(left: 10,right: 10),
+      margin: const EdgeInsets.only(left: 10, right: 10),
       child: Stack(
         children: <Widget>[
           const Positioned(
@@ -276,7 +285,8 @@ class _ShareContentPageState extends State<ShareContentPage> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 20, left: 35, bottom: 20, right: 35),
+            margin:
+                const EdgeInsets.only(top: 20, left: 35, bottom: 20, right: 35),
             child: const Text(
               '每一步都是进步，每一天都是起点，坚持不懈就能创造辉煌，相信相信的力量！',
               style: TextStyle(fontSize: 14, color: Colors.white),
@@ -308,7 +318,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
   }
 
   //尾部内容
-  Widget buildBottomContentView(){
+  Widget buildBottomContentView() {
     return Container(
       // color: Colors.blue,
       padding: const EdgeInsets.only(left: 10, right: 10),
@@ -376,7 +386,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
   }
 
   //尾部右边内容
-  Widget buildBottomRightColumn(){
+  Widget buildBottomRightColumn() {
     return Container(
       // color: Colors.blue,
       child: Column(
@@ -386,10 +396,9 @@ class _ShareContentPageState extends State<ShareContentPage> {
           Text(
             '12月28日 星期六',
             style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF00B377)
-            ),
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF00B377)),
           ),
           SizedBox(height: 5),
           Text(
@@ -404,4 +413,3 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 }
-
