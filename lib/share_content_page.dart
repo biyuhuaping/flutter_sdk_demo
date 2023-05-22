@@ -28,82 +28,50 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        double containerHeight = constraints.maxHeight;
-        double screenHeight = MediaQuery.of(context).size.height - 200;
+    double containerHeight = MediaQuery.of(context).size.height - 200;
 
-        return Container(//弹框视图容器
-          margin: const EdgeInsets.only(top: 80), // 弹框顶部位置
-          height: containerHeight > screenHeight ? screenHeight : containerHeight, // 弹框整体高度
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: containerHeight+300,//TODO：这个里的高度必须写死，怎么才能写活
-              child: Stack(
+    return Container(
+      //弹框视图容器
+      margin: const EdgeInsets.only(top: 80), // 弹框顶部位置
+      height: containerHeight, // 弹框整体高度
+      decoration: BoxDecoration(
+        // color: Colors.blue,
+        borderRadius: BorderRadius.circular(9),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            buildHeaderButtons(context),
+            Image.asset(
+              selectedType == 1
+                  ? 'assets/share_header_BD.png'
+                  : 'assets/share_header_KA.png',
+              fit: BoxFit.cover,
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFFB8702),
+                // color: Colors.green,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(13),
+                  bottomRight: Radius.circular(13),
+                ),
+              ),
+              child: Column(
                 children: <Widget>[
-                  buildHeaderButtons(context),
-                  Positioned(
-                    top: 50,
-                    left: 0,
-                    right: 0,
-                    child: Image.asset(
-                      selectedType == 1
-                          ? 'assets/share_header_BD.png'
-                          : 'assets/share_header_KA.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned.fill(
-                    top: 150,
-                    child: buildContainer(),
-                  ),
+                  buildContentView(context), //排名数据
+                  buildRichText(), //富文本
+                  buildFooterView(), //底部白色内容
                 ],
               ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 
-  Widget buildContainer() {
-    return Stack(
-      children: [
-        Positioned.fill(
-          top: 50,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFFFB8702),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(13),
-                bottomRight: Radius.circular(13),
-              ),
-            ),
-          ),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemCount: 1,
-          itemBuilder: (context, index) {
-            return Column(
-              children: <Widget>[
-                buildContentView(context),
-                buildRichText(),
-                buildFooterView(),
-              ],
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  //头部按钮部件
+  //头部按钮：BD榜、KA榜
   Widget buildHeaderButtons(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(2),
@@ -148,20 +116,9 @@ class _ShareContentPageState extends State<ShareContentPage> {
         child: Text(
           title,
           style: TextStyle(
-              color: selected ? Colors.white : const Color(0xFFFC6105), fontSize: 18),
+              color: selected ? Colors.white : const Color(0xFFFC6105),
+              fontSize: 18),
         ),
-      ),
-    );
-  }
-
-  //头部图片
-  Widget buildHeaderView() {
-    return Container(
-      color: Colors.green,
-      child: Image.asset(
-        'assets/share_header_BD.png',
-        // width: 7,
-        // height: 12,
       ),
     );
   }
@@ -175,7 +132,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
     ];
 
     return Container(
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
       padding: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.4),
@@ -196,6 +153,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
+  // 每组样式
   Widget buildContentGroup({required BuildContext context, Widget? child}) {
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10), //外边距
@@ -207,7 +165,6 @@ class _ShareContentPageState extends State<ShareContentPage> {
       child: child,
     );
   }
-
 
   //item 单组数据 图片和文字
   Widget buildImageWithText(ImageProvider image, List<String> texts) {
@@ -269,7 +226,8 @@ class _ShareContentPageState extends State<ShareContentPage> {
   //底部富文本
   Widget buildRichText() {
     return Container(
-      margin: const EdgeInsets.only(left: 10, right: 10),
+      color: Color(0xFFFB8702),
+      padding: const EdgeInsets.only(left: 10, right: 10),
       child: Stack(
         children: <Widget>[
           const Positioned(
@@ -277,7 +235,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
             left: 0,
             child: Text(
               '“',
-              style: TextStyle(fontSize: 66, color: Colors.white),
+              style: TextStyle(fontSize: 60, color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           const Positioned(
@@ -285,7 +243,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
             right: 0,
             child: Text(
               '”',
-              style: TextStyle(fontSize: 66, color: Colors.white),
+              style: TextStyle(fontSize: 60, color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           Container(
@@ -301,9 +259,15 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
-  //尾部布局
+  //尾部视图容器
   Widget buildFooterView() {
     return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(13),
+          bottomRight: Radius.circular(13),
+        ),
+      ),
       child: Stack(
         children: <Widget>[
           Image.asset('assets/share_bottom_horn.png'),
