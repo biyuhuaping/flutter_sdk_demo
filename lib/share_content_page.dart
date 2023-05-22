@@ -60,7 +60,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
               child: Column(
                 children: <Widget>[
                   buildContentView(context), //排名数据
-                  buildRichText(), //富文本
+                  buildEncourageText(), //底部激励文本
                   buildFooterView(), //底部白色内容
                 ],
               ),
@@ -131,32 +131,36 @@ class _ShareContentPageState extends State<ShareContentPage> {
       'assets/share_dept3.png',
     ];
 
+    List<Widget> children = imageUrls.map((imageUrl) {
+      ImageProvider image = AssetImage(imageUrl);
+      Widget widget = buildItemImageWithText(image);
+      return buildContentGroup(widget);
+    }).toList();
+
+    //如果是自己，也是登顶了，就显示登顶样式
+    if (1 == 1){
+      // 替换第一个元素
+      children[0] = buildGroupOfMyTop();
+    }
+
     return Container(
-      margin: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
-      padding: const EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+      padding: const EdgeInsets.only(top: 9),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.4),
         borderRadius: BorderRadius.circular(9),
       ),
-      child: ListView.builder(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: imageUrls.length,
-        itemBuilder: (BuildContext context, int index) {
-          ImageProvider image = AssetImage(imageUrls[index]);
-          List<String> texts = ['Text 1', 'Text 2', 'Text 3'];
-          Widget widget = buildImageWithText(image, texts);
-          return buildContentGroup(context: context, child: widget);
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
       ),
     );
   }
 
-  // 每组样式
-  Widget buildContentGroup({required BuildContext context, Widget? child}) {
+  // 每个分组的样式
+  Widget buildContentGroup(Widget? child) {
     return Container(
-      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10), //外边距
+      margin: const EdgeInsets.only(left: 9, right: 9, bottom: 9), //外边距
       padding: const EdgeInsets.all(5), //内边距
       decoration: BoxDecoration(
         color: Colors.white,
@@ -166,15 +170,122 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
+  //我登顶的样式
+  Widget buildGroupOfMyTop(){
+    Widget widget = Container(
+      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+      height: 160,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        // border: Border.all(
+        //   color: Color(0xFFCC7200), // 边框的颜色
+        //   width: 1.0, // 边框的宽度
+        // ),
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFF9EC), Color(0xFFFEDEB6)], // 渐变的颜色数组
+          begin: Alignment.topCenter, // 渐变的起点位置
+          end: Alignment.bottomCenter, // 渐变的终点位置
+          stops: [0.0, 1.0], // 渐变颜色的分布位置，范围是0.0到1.0
+        ),
+      ),
+      child: buildTopImageWithText(),
+    );
+    Widget stack = Stack(
+      children: [
+        widget,
+        Align(
+          alignment: Alignment.center,
+          child: Image.asset('assets/share_top.png',width: 127, height: 30,),
+        ),
+      ],
+    );
+    return stack;
+  }
+
+  //登顶内容：图片、文字
+  Widget buildTopImageWithText() {
+    Map<String, String> amountMap = formatAmount(6650000);
+
+    return Container(
+      // color: Colors.green,
+      child: Row(
+        children: <Widget>[
+          Container(
+            child: Image.asset(
+              'assets/share_dept1.png',
+            ),
+          ),
+          const SizedBox(width: 7.5),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      amountMap['value']!,
+                      style: const TextStyle(
+                        fontSize: 44,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(amountMap['unit']!,
+                      style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                  ],
+                ),
+                // SizedBox(height: 2),
+                RichText(
+                  text:const TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '天玑',
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '（胡高忠）',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   //item 单组数据 图片和文字
-  Widget buildImageWithText(ImageProvider image, List<String> texts) {
+  Widget buildItemImageWithText(ImageProvider image) {
+    List<String> texts = [
+      '花茶（王志杰）',
+      '花名（姓名）',
+      // 'Text 3'
+    ];
     List<String> subTitles = [
-      'Subtitle 1',
-      'Subtitle 2',
-      'Subtitle 3',
+      '华北一区/山北销售部/销售一组',
+      '华北一区/山北销售部/销售二组',
+      '华北一区/山北销售部/销售三组',
     ];
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           width: 110, // 图片宽度
@@ -196,7 +307,10 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
   // 每条内容
   Widget buildItemWidget(
-      String title, List<String> mainTitles, List<String> subTitles) {
+      String title,
+      List<String> mainTitles,
+      List<String> subTitles,
+      ) {
     return ListView.builder(
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
@@ -204,7 +318,8 @@ class _ShareContentPageState extends State<ShareContentPage> {
       itemCount: mainTitles.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return Text(
+          return buildItemFormatText(5000);
+            Text(
             title,
             style: const TextStyle(
               fontSize: 28,
@@ -214,17 +329,86 @@ class _ShareContentPageState extends State<ShareContentPage> {
           );
         } else {
           final itemIndex = index - 1;
-          return ListTile(
-            title: Text(mainTitles[itemIndex]),
-            subtitle: Text(subTitles[itemIndex]),
+          return Container(
+            // color: Colors.red,
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  mainTitles[itemIndex],
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  subTitles[itemIndex],
+                  style: const TextStyle(
+                    fontSize: 10,
+                  ),
+                ),
+              ],
+            ),
           );
         }
       },
     );
   }
 
-  //底部富文本
-  Widget buildRichText() {
+  //处理item内，
+  Widget buildItemFormatText(double amount) {
+    String string; // 金额
+    String unit; // 单位
+    if (amount < 10000) {
+      string = amount.toString(); // 元
+      unit = '元';
+    } else {
+      int tenThousand = amount ~/ 10000;
+      string = '$tenThousand'; // 万+
+      unit = '万+';
+    }
+
+    return DefaultTextStyle(
+      style: const TextStyle(
+        fontSize: 24,
+        color: Colors.red,
+        fontWeight: FontWeight.w600,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            string,
+            style: const TextStyle(
+              fontSize: 33,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(unit),
+        ],
+      ),
+    );
+  }
+
+  /// 格式化金额和单位 元/万+
+  Map<String, String> formatAmount(double amount) {
+    String value; // 金额
+    String unit; // 单位
+    if (amount < 10000) {
+      value = amount.toString(); // 元
+      unit = '元';
+    } else {
+      int tenThousand = amount ~/ 10000;
+      value = '$tenThousand'; // 万+
+      unit = '万+';
+    }
+    return {'value': value, 'unit': unit};
+  }
+
+
+  //底部激励文本
+  Widget buildEncourageText() {
     return Container(
       color: Color(0xFFFB8702),
       padding: const EdgeInsets.only(left: 10, right: 10),
