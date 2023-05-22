@@ -29,7 +29,7 @@ class SharePageViewState extends State<SharePageView> {
           ),
           Positioned(
             right: 17,
-            child: buildMaterialButton("分享", hasImg: true, onPressed:() {
+            child: buildMaterialButton("分享", hasGradient: true, onPressed:() {
               Navigator.pop(context);
               //share_plus 分享
               ShareHelper.onSharePlusShare(context);
@@ -42,14 +42,23 @@ class SharePageViewState extends State<SharePageView> {
   }
 
   //按钮：关闭、分享
-  Widget buildMaterialButton(String title, {bool hasImg = false, VoidCallback? onPressed}) {
-    return Container(
+  Widget buildMaterialButton(String title, {bool hasGradient = false, VoidCallback? onPressed}) {
+     return Container(
       height: 50,
       width: 163,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
         borderRadius: BorderRadius.circular(25),
-        image: hasImg ? DecorationImage(image: AssetImage('assets/share_btn.png'), fit: BoxFit.cover) : null,
+        border: !hasGradient
+            ? Border.all(color: Colors.white, width: 1.0,)
+            : null,
+        gradient: hasGradient
+            ? const LinearGradient(
+          colors: [Color(0xFFFB9C02), Color(0xFFFB6302)],// 渐变的颜色数组
+          begin: Alignment.centerLeft, // 渐变的起点位置
+          end: Alignment.centerRight, // 渐变的终点位置
+          stops: [0.0, 1.0], // 渐变颜色的分布位置，范围是0.0到1.0
+        )
+            : null,
       ),
       child: TextButton(
         onPressed: onPressed,

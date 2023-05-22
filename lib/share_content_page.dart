@@ -133,12 +133,12 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
     List<Widget> children = imageUrls.map((imageUrl) {
       ImageProvider image = AssetImage(imageUrl);
-      Widget widget = buildItemImageWithText(image);
-      return buildContentGroup(widget);
+      Widget widget = buildGroupContent(image);
+      return buildGroupStyle(widget);
     }).toList();
 
     //如果是自己，也是登顶了，就显示登顶样式
-    if (1 == 1){
+    if (1 == 1) {
       // 替换第一个元素
       children[0] = buildGroupOfMyTop();
     }
@@ -157,21 +157,8 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
-  // 每个分组的样式
-  Widget buildContentGroup(Widget? child) {
-    return Container(
-      margin: const EdgeInsets.only(left: 9, right: 9, bottom: 9), //外边距
-      padding: const EdgeInsets.all(5), //内边距
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: child,
-    );
-  }
-
   //我登顶的样式
-  Widget buildGroupOfMyTop(){
+  Widget buildGroupOfMyTop() {
     Widget widget = Container(
       margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
       height: 160,
@@ -195,7 +182,11 @@ class _ShareContentPageState extends State<ShareContentPage> {
         widget,
         Align(
           alignment: Alignment.center,
-          child: Image.asset('assets/share_top.png',width: 127, height: 30,),
+          child: Image.asset(
+            'assets/share_top.png',
+            width: 127,
+            height: 30,
+          ),
         ),
       ],
     );
@@ -204,7 +195,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
   //登顶内容：图片、文字
   Widget buildTopImageWithText() {
-    Map<String, String> amountMap = formatAmount(6650000);
+    List<String> amountList = formatAmount(6650000);
 
     return Container(
       // color: Colors.green,
@@ -225,25 +216,26 @@ class _ShareContentPageState extends State<ShareContentPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      amountMap['value']!,
+                      amountList[0]!,
                       style: const TextStyle(
                         fontSize: 44,
                         color: Colors.red,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(amountMap['unit']!,
+                    Text(
+                      amountList[1]!,
                       style: const TextStyle(
-                      fontSize: 24,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 24,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
                 // SizedBox(height: 2),
                 RichText(
-                  text:const TextSpan(
+                  text: const TextSpan(
                     children: [
                       TextSpan(
                         text: '天玑',
@@ -272,8 +264,20 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
-  //item 单组数据 图片和文字
-  Widget buildItemImageWithText(ImageProvider image) {
+  // 每个分组的样式
+  Widget buildGroupStyle(Widget? child) {
+    return Container(
+      margin: const EdgeInsets.only(left: 9, right: 9, bottom: 9), //外边距
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: child,
+    );
+  }
+
+  // 每组数据 图片和文字，底部排名
+  Widget buildGroupContent(ImageProvider image) {
     List<String> texts = [
       '花茶（王志杰）',
       '花名（姓名）',
@@ -284,54 +288,136 @@ class _ShareContentPageState extends State<ShareContentPage> {
       '华北一区/山北销售部/销售二组',
       '华北一区/山北销售部/销售三组',
     ];
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 110, // 图片宽度
-          height: 110, // 图片高度
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: image,
-              fit: BoxFit.cover,
+
+    String rankType = "23名";//排行类型
+    String rankLevelText = "下降6名";//等级文案
+    String rankRateText = "23.34%";//超过率文案
+
+    List<Widget> children = [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 110, // 图片宽度
+            height: 110, // 图片高度
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: image,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 16), // 图片和文字之间的间距
-        Expanded(
-          child: buildItemWidget("55万+", texts, subTitles),
-        ),
-      ],
+          const SizedBox(width: 16), // 图片和文字之间的间距
+          Expanded(
+            child: buildItemWidget("55万+", texts, subTitles),
+          ),
+        ],
+      ),
+    ];
+
+    //如果有排名内容，就添加widget
+    if(1==2){
+      children.add(buildGroupBottomContent());
+    }
+    return Column(
+      children: children
     );
   }
 
-  // 每条内容
+  //组内排名内容
+  Widget buildGroupBottomContent() {
+    int rankType = 23; // 排行类型
+    int rankLevel = 6;
+    String rankLevelText; // 等级文案
+    Color color;
+    String rankRateText = "23.34%"; // 超过率文案
+
+    if (rankLevel < 0){
+      rankLevelText = '下降${-rankLevel}名';
+      color = Color(0xFF00B377);//绿色
+    }else if(rankLevel > 0){
+      rankLevelText = "上升$rankLevel名";
+      color = Color(0xFF00B377);//绿色 TODO:是否展示红色？//Colors.red;//红色
+    }else{
+      rankLevelText = "相同";
+      color = Color(0xFFF9F9F9);//默认的灰色
+    }
+
+    return Container(
+      padding: EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Color(0xFFF9F9F9),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(4),
+          bottomRight: Radius.circular(4),
+        ),
+        border: Border.all(
+          color: Color(0xFFDFDFDF), // 边框的颜色
+          width: 0.5, // 边框的宽度
+        ),
+      ),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: TextStyle(fontSize: 13, color: Color(0xFF676773)),
+          children: [
+            TextSpan(
+              text: '我的排名',
+            ),
+            TextSpan(
+              text: '$rankType名',
+              style: TextStyle(color: Color(0xFF00B377)),
+            ),
+            TextSpan(
+              text: '，比昨天',
+            ),
+            TextSpan(
+              text: rankLevelText,//下降/上升/相同
+              style: TextStyle(color: color),
+            ),
+            TextSpan(
+              text: '\n超过全国',
+            ),
+            TextSpan(
+              text: rankRateText,
+              style: TextStyle(color: Color(0xFF00B377)),
+            ),
+            TextSpan(
+              text: '的KA',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  // 每条组内容：
+  // 55 万+
+  // 花名（姓名）
+  // 区域/销售部门
   Widget buildItemWidget(
-      String title,
-      List<String> mainTitles,
-      List<String> subTitles,
-      ) {
+    String title,
+    List<String> mainTitles,
+    List<String> subTitles,
+  ) {
     return ListView.builder(
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.only(top: 5,bottom: 5),
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: mainTitles.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
+          //55 万+
           return buildItemFormatText(5000);
-            Text(
-            title,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.red,
-            ),
-          );
         } else {
           final itemIndex = index - 1;
+          // 花名（姓名）
+          // 区域/销售部门
           return Container(
             // color: Colors.red,
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.only(top: 8, bottom: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -356,18 +442,9 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
-  //处理item内，
+  //处理item内，//55 元/万+
   Widget buildItemFormatText(double amount) {
-    String string; // 金额
-    String unit; // 单位
-    if (amount < 10000) {
-      string = amount.toString(); // 元
-      unit = '元';
-    } else {
-      int tenThousand = amount ~/ 10000;
-      string = '$tenThousand'; // 万+
-      unit = '万+';
-    }
+    List<String> amountList = formatAmount(15000);
 
     return DefaultTextStyle(
       style: const TextStyle(
@@ -379,20 +456,20 @@ class _ShareContentPageState extends State<ShareContentPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            string,
+            amountList[0]!,
             style: const TextStyle(
               fontSize: 33,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(unit),
+          Text(amountList[1]!),
         ],
       ),
     );
   }
 
-  /// 格式化金额和单位 元/万+
-  Map<String, String> formatAmount(double amount) {
+  // 格式化金额和单位 元/万+
+  List<String> formatAmount(double amount) {
     String value; // 金额
     String unit; // 单位
     if (amount < 10000) {
@@ -403,9 +480,8 @@ class _ShareContentPageState extends State<ShareContentPage> {
       value = '$tenThousand'; // 万+
       unit = '万+';
     }
-    return {'value': value, 'unit': unit};
+    return [value, unit];
   }
-
 
   //底部激励文本
   Widget buildEncourageText() {
@@ -419,7 +495,10 @@ class _ShareContentPageState extends State<ShareContentPage> {
             left: 0,
             child: Text(
               '“',
-              style: TextStyle(fontSize: 60, color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 60,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
           ),
           const Positioned(
@@ -427,7 +506,10 @@ class _ShareContentPageState extends State<ShareContentPage> {
             right: 0,
             child: Text(
               '”',
-              style: TextStyle(fontSize: 60, color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 60,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
           ),
           Container(
