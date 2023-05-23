@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sdk_demo/FullScreenModal.dart';
 import 'package:draggable_widget/draggable_widget.dart';
-import 'share_content_page.dart';
 import 'share_page.dart';
 
 // This is the main screen of the application
@@ -14,17 +12,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final dragController = DragController();
-
-  void _showModal(BuildContext context) {
-    // Navigator.of(context).push(FullScreenModal());
-    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => SharePageView()));
-    Navigator.of(context).push(PageRouteBuilder(
-        opaque: false,
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return SharePageView();//CaptureImagePage();
-        })
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text("隐藏悬浮按钮"),
                 ),
                 TextButton(
-                  onPressed: () => _showModal(context),
+                  onPressed: () => _showSharesDialog(context),
                   child: Text("显示半透明视图"),
                 ),
               ],
@@ -74,6 +61,18 @@ class _HomeScreenState extends State<HomeScreen> {
             dragController: dragController,
           )
         ],
+      ),
+    );
+  }
+
+  // 弹出底部菜单列表模态对话框
+  Future<int?> _showSharesDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,//点击背后蒙层是否关闭弹框，默认为 true
+      builder: (_) => Padding(
+        padding: EdgeInsets.all(17),
+        child: ShareContentPage(),
       ),
     );
   }
