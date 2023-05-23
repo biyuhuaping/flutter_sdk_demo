@@ -103,7 +103,8 @@ class _ShareContentPageState extends State<ShareContentPage> {
   Widget buildRepaintBoundary(){
     return RepaintBoundary(
       key: repaintWidgetKey,
-      child: Container(
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(13),),
         child: Column(
           children: [
             Image.asset(
@@ -113,15 +114,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
               fit: BoxFit.cover,
             ),
             Container(
-              // height: MediaQuery.of(context).size.height -200,
-              decoration: const BoxDecoration(
-                color: Color(0xFFFB8702),
-                // color: Colors.green,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(13),
-                  bottomRight: Radius.circular(13),
-                ),
-              ),
+              color: Color(0xFFFB8702),
               child: Column(
                 children: <Widget>[
                   buildContentView(context), //排名数据
@@ -204,7 +197,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
     //如果是自己，也是登顶了，就显示登顶样式
     if (1 == 1) {
-      // 替换第一个元素
+      // 替换第一个元素为登顶样式
       children[0] = buildGroupOfMyTop();
     }
 
@@ -381,7 +374,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
     ];
 
     //如果有排名内容，就添加widget
-    if(1==2){
+    if(1==1){
       children.add(buildGroupBottomContent());
     }
     return Column(
@@ -457,16 +450,11 @@ class _ShareContentPageState extends State<ShareContentPage> {
     );
   }
 
-
   // 每条组内容：
   // 55 万+
   // 花名（姓名）
   // 区域/销售部门
-  Widget buildItemWidget(
-    String title,
-    List<String> mainTitles,
-    List<String> subTitles,
-  ) {
+  Widget buildItemWidget(String title, List<String> mainTitles, List<String> subTitles,) {
     return ListView.builder(
       padding: EdgeInsets.only(top: 5,bottom: 5),
       physics: NeverScrollableScrollPhysics(),
@@ -592,27 +580,19 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
   //尾部视图容器
   Widget buildFooterView() {
-    return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(13),
-          bottomRight: Radius.circular(13),
-        ),
-      ),
-      child: Stack(
-        children: <Widget>[
-          Image.asset('assets/share_bottom_horn.png'),
-          Positioned.fill(
-            top: 6,
-            left: 0,
-            right: 0,
-            child: Align(
-              alignment: Alignment.center,
-              child: buildBottomContentView(),
-            ),
+    return Stack(
+      children: <Widget>[
+        Image.asset('assets/share_bottom_horn.png'),
+        Positioned.fill(
+          top: 6,
+          left: 0,
+          right: 0,
+          child: Align(
+            alignment: Alignment.center,
+            child: buildBottomContentView(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
