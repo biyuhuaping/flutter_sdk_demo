@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'share_helper.dart';
 import 'share_content_page.dart';
 
 // this class defines the full-screen semi-transparent modal dialog
@@ -58,7 +57,6 @@ class FullScreenModal extends ModalRoute {
           buildMaterialButton("分享", Colors.orange, (){
             Navigator.pop(context);
             //share_plus 分享
-            ShareHelper.onSharePlusShare(context);
           })
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.

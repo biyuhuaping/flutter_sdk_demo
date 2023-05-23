@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart'; //SharePageView
 import 'package:flutter/cupertino.dart';
-import 'share_helper.dart';
 import 'share_content_page.dart';
 
 class SharePageView extends StatefulWidget {
@@ -18,26 +17,26 @@ class SharePageViewState extends State<SharePageView> {
         child: ShareContentPage(),
         color: Colors.transparent,
       ),
-      floatingActionButton: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Positioned(
-            left: 17,
-            child: buildMaterialButton("关闭", onPressed:() {
-              Navigator.pop(context);
-            }),
-          ),
-          Positioned(
-            right: 17,
-            child: buildMaterialButton("分享", hasGradient: true, onPressed:() {
-              Navigator.pop(context);
-              //share_plus 分享
-              ShareHelper.onSharePlusShare(context);
-            }),
-          ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: Stack(
+      //   alignment: Alignment.bottomCenter,
+      //   children: [
+      //     Positioned(
+      //       left: 17,
+      //       child: buildMaterialButton("关闭", onPressed:() {
+      //         Navigator.pop(context);
+      //       }),
+      //     ),
+      //     Positioned(
+      //       right: 17,
+      //       child: buildMaterialButton("分享", hasGradient: true, onPressed:() {
+      //         Navigator.pop(context);
+      //         //share_plus 分享
+      //         ShareHelper.onSharePlusShare(context);
+      //       }),
+      //     ),
+      //   ],
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'share_helper.dart';
 
 class Data {
   final String title;
@@ -15,6 +16,8 @@ class ShareContentPage extends StatefulWidget {
 }
 
 class _ShareContentPageState extends State<ShareContentPage> {
+  GlobalKey repaintWidgetKey = GlobalKey(); // 绘图key值
+
   final List<Data> dataList = [
     Data('Group 1', ['Item 1', 'Item 2', 'Item 3']),
     Data('Group 2', ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5']),
@@ -23,25 +26,86 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
   bool isButton1Selected = true;
   int selectedType = 1; //默认选中BD=1，KA=2
-  // double containerHeight = MediaQuery.of(context).size.height - 200; //弹框整体默认高度
-  // double screenHeight = WidgetsBinding.instance!.window.physicalSize.height / WidgetsBinding.instance!.window.devicePixelRatio;
 
   @override
   Widget build(BuildContext context) {
-    double containerHeight = MediaQuery.of(context).size.height - 200;
+    double containerHeight = MediaQuery.of(context).size.height-200;
 
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 80), // 弹框顶部位置
+          height: containerHeight, // 弹框整体高度
+          decoration: BoxDecoration(
+            // color: Colors.blue,
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                buildHeaderButtons(context),
+                buildRepaintBoundary(),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          height: 90,
+          // color: Colors.blue,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              buildMaterialButton("关闭", onPressed:() {
+                Navigator.pop(context);
+              }),
+              buildMaterialButton("分享", hasGradient: true, onPressed:() {
+                // Navigator.pop(context);
+                //share_plus 分享
+                ShareHelper().onSharePlusShare(repaintWidgetKey);
+              }),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  //按钮：关闭、分享
+  Widget buildMaterialButton(String title, {bool hasGradient = false, VoidCallback? onPressed}) {
     return Container(
-      //弹框视图容器
-      margin: const EdgeInsets.only(top: 80), // 弹框顶部位置
-      height: containerHeight, // 弹框整体高度
+      height: 50,
+      width: 163,
       decoration: BoxDecoration(
-        // color: Colors.blue,
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(25),
+        border: !hasGradient
+            ? Border.all(color: Colors.white, width: 1.0,)
+            : null,
+        gradient: hasGradient
+            ? const LinearGradient(
+          colors: [Color(0xFFFB9C02), Color(0xFFFB6302)],// 渐变的颜色数组
+          begin: Alignment.centerLeft, // 渐变的起点位置
+          end: Alignment.centerRight, // 渐变的终点位置
+          stops: [0.0, 1.0], // 渐变颜色的分布位置，范围是0.0到1.0
+        )
+            : null,
       ),
-      child: SingleChildScrollView(
+      child: TextButton(
+        onPressed: onPressed,
+        child: Text(
+          title,
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+      ),
+    );
+  }
+
+  //整个截图部分
+  Widget buildRepaintBoundary(){
+    return RepaintBoundary(
+      key: repaintWidgetKey,
+      child: Container(
         child: Column(
-          children: <Widget>[
-            buildHeaderButtons(context),
+          children: [
             Image.asset(
               selectedType == 1
                   ? 'assets/share_header_BD.png'
@@ -49,6 +113,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
               fit: BoxFit.cover,
             ),
             Container(
+              // height: MediaQuery.of(context).size.height -200,
               decoration: const BoxDecoration(
                 color: Color(0xFFFB8702),
                 // color: Colors.green,
@@ -216,7 +281,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      amountList[0]!,
+                      amountList[0],
                       style: const TextStyle(
                         fontSize: 44,
                         color: Colors.red,
@@ -224,7 +289,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
                       ),
                     ),
                     Text(
-                      amountList[1]!,
+                      amountList[1],
                       style: const TextStyle(
                         fontSize: 24,
                         color: Colors.red,
@@ -456,13 +521,13 @@ class _ShareContentPageState extends State<ShareContentPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            amountList[0]!,
+            amountList[0],
             style: const TextStyle(
               fontSize: 33,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(amountList[1]!),
+          Text(amountList[1]),
         ],
       ),
     );

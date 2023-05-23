@@ -1,33 +1,50 @@
 import 'package:flutter/material.dart';
-import 'repaintBoundary_utils.dart';
+
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
+import 'package:flutter/rendering.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareHelper {
+  GlobalKey repaintWidgetKey = GlobalKey(); // 绘图key值
 
-  static bool wxIsInstalled = false;
+  /// 分享图片
+  Future<void> onSharePlusShare(GlobalKey repaintWidgetKey) async {
+    this.repaintWidgetKey = repaintWidgetKey;
+    Uint8List? sourceBytes = await _capturePngToByteData();
+    if (sourceBytes == null) {
+      return;
+    }
+    Directory tempDir = await getTemporaryDirectory();
+    String storagePath = tempDir.path;
+    File file = File(
+        '$storagePath/xyy_share_image_${DateTime.now().millisecondsSinceEpoch}.png');
+    debugPrint('==filepath: ${file.path}');
+    if (!file.existsSync()) {
+      file.createSync();
+    }
+    file.writeAsBytesSync(sourceBytes);
+    await Share.shareXFiles([XFile(file.path)]);
+    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("分享图片成功")));
+  }
 
-  //share_plus分享
-  static void onSharePlusShare(BuildContext context) async {
-    FocusScope.of(context).requestFocus(FocusNode());
-    // A builder is used to retrieve the context immediately
-    // surrounding the ElevatedButton.
-    // The context's `findRenderObject` returns the first
-    // RenderObject in its descendent tree when it's not
-    // a RenderObjectWidget. The ElevatedButton's RenderObject
-    // has its position and size after it's built.
-    final box = context.findRenderObject() as RenderBox?;
-    List<String> imagePaths = [];
-
-    //获取截图地址
-    String filePath = await RepaintBoundaryUtils().captureImage();
-    //Share.shareFiles内可以传多张图片，里面是个数组，所以每次要将数组清空，再将新的截图添加到数组中
-    imagePaths.clear();
-    imagePaths.add(filePath);
-    print("================$filePath");
-    //分享
-    await Share.shareFiles(imagePaths,
-        text: "机构详情",
-        subject: "",
-        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+  /// 截屏图片生成图片，返回图片二进制
+  Future<Uint8List?> _capturePngToByteData() async {
+    try {
+      RenderRepaintBoundary? boundary = repaintWidgetKey.currentContext
+          ?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) {
+        return null;
+      }
+      // 获取当前设备的像素比
+      double dpr = ui.window.devicePixelRatio;
+      ui.Image image = await boundary.toImage(pixelRatio: dpr);
+      final sourceBytes = await image.toByteData(format: ui.ImageByteFormat.png);
+      return sourceBytes?.buffer.asUint8List();
+    } catch (e) {
+      return null;
+    }
   }
 }

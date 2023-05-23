@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sdk_demo/FullScreenModal.dart';
-import 'share_helper.dart';
 import 'package:draggable_widget/draggable_widget.dart';
 import 'share_content_page.dart';
 import 'share_page.dart';
@@ -22,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).push(PageRouteBuilder(
         opaque: false,
         pageBuilder: (context, animation, secondaryAnimation) {
-          return SharePageView();
+          return SharePageView();//CaptureImagePage();
         })
     );
   }
