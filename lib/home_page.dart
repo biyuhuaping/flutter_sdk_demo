@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 弹出底部菜单列表模态对话框
+  // 弹出分享Dialog
   Future<int?> _showSharesDialog(BuildContext context) {
     return showDialog(
       context: context,
