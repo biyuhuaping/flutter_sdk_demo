@@ -118,6 +118,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
 
   //整个截图部分
   Widget buildRepaintBoundary(){
+    double width = MediaQuery.of(context).size.width - 34;
     return RepaintBoundary(
       key: repaintWidgetKey,
       child: ClipRRect(
@@ -129,6 +130,8 @@ class _ShareContentPageState extends State<ShareContentPage> {
                   ? 'assets/share_header_BD.png'
                   : 'assets/share_header_KA.png',
               fit: BoxFit.cover,
+              width: width,
+              scale: 114 / 375,
             ),
             Container(
               color: Color(0xFFFB8702),
