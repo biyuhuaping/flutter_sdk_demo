@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (ctx) => HomeScreen(),
       },
+      // home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }

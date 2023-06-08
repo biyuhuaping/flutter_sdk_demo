@@ -61,9 +61,7 @@ class _ShareContentPageState extends State<ShareContentPage> {
                   Navigator.pop(context);
                 }),
                 buildMaterialButton("分享", hasGradient: true, onPressed:() {
-                  // Navigator.pop(context);
-                  //share_plus 分享
-                  ShareHelper().onSharePlusShare(repaintWidgetKey);
+                  intervalClick(2);
                 }),
               ],
             ),
@@ -72,6 +70,22 @@ class _ShareContentPageState extends State<ShareContentPage> {
       ),
     );
   }
+
+  /// 防重复提交
+  var  lastPopTime = DateTime.now();
+  void intervalClick(int needTime){
+    // 防重复提交
+    if(lastPopTime == null || DateTime.now().difference(lastPopTime) > Duration(seconds: needTime)){
+      print(lastPopTime);
+      lastPopTime = DateTime.now();
+      print("允许点击");
+      ShareHelper().onSharePlusShare(repaintWidgetKey);
+    }else{
+      // lastPopTime = DateTime.now(); //如果不注释这行,则强制用户一定要间隔2s后才能成功点击. 而不是以上一次点击成功的时间开始计算.
+      print("请勿重复点击！");
+    }
+  }
+
 
   //按钮：关闭、分享
   Widget buildMaterialButton(String title, {bool hasGradient = false, VoidCallback? onPressed}) {
